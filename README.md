@@ -1,0 +1,1 @@
+# Intelegent-systems-8-sem
