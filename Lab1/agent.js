@@ -6,14 +6,13 @@ class Agent {
     constructor() {
         this.position = "l" // По умолчанию - левая половина поля
         this.run = false // Игра начата
+        this.moment = 0;
+    }
+    async readParam() {
         this.rl = readline.createInterface({ // Чтение консоли
             input: process.stdin,
             output: process.stdout
         })
-        this.moment = null;
-
-    }
-    async readParam() {
         let xCoord;
         let yCoord;
         let moment;
@@ -31,7 +30,7 @@ class Agent {
    
         this.moment = moment;
         this.socketSend("move", `${xCoord} ${yCoord}`)
-        //console.log(xCoord + " " + yCoord + " " + moment);
+        console.log(`${xCoord} ${yCoord}` + " " + moment);
     }
 
     async readLine(str) {
