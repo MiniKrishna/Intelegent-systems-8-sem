@@ -6,21 +6,40 @@ class Agent {
     constructor() {
         this.position = "l" // По умолчанию - левая половина поля
         this.run = false // Игра начата
-        this.act = // Действия
-            this.rl = readline.createInterface({ // Чтение консоли
-                input: process.stdin,
-                output: process.stdout
-            })
-        this.rl.on('line', (input) => { // Обработка строки из консоли
-            if (this.run) { // Если игра начата
-                // Движения вперед, вправо, влево, удар по мячу
-                if ("w" == input) this.act = { n: "dash", v: 100 }
-                if ("d" == input) this.act = { n: "turn", v: 20 }
-                if ("a" == input) this.act = { n: "turn", v: -20 }
-                if ("s" == input) this.act = { n: "kick", v: 100 }
-            }
+        this.rl = readline.createInterface({ // Чтение консоли
+            input: process.stdin,
+            output: process.stdout
         })
+        this.moment = null;
+
     }
+    async readParam() {
+        let xCoord;
+        let yCoord;
+        let moment;
+        do {
+            xCoord = await this.readLine("X coodrd: ");
+        } while (Math.abs(xCoord) > 54);
+
+        do {
+            yCoord = await this.readLine("Y coodrd: ");
+        } while (Math.abs(yCoord) > 32);
+
+        do {
+            moment = await this.readLine("Moment: ");
+        } while (Math.abs(moment) > 180);
+   
+        this.moment = moment;
+        this.socketSend("move", `${xCoord} ${yCoord}`)
+        //console.log(xCoord + " " + yCoord + " " + moment);
+    }
+
+    async readLine(str) {
+        return new Promise(resolve => {
+            this.rl.question(str, answer => { resolve(answer); });
+        });
+    }
+
     msgGot(msg) { // Получение сообщения
         let data = msg.toString('utf8') // Приведение к строке
         this.processMsg(data) // Разбор сообщения
@@ -48,13 +67,7 @@ class Agent {
     }
     sendCmd() {
         if (this.run) { // Игра начата
-            if (this.act) { // Есть команда от игрока
-                if (this.act.n == "kick") // Пнуть мяч
-                    this.socketSend(this.act.n, this.act.v + " 0")
-                else // Движение и поворот
-                    this.socketSend(this.act.n, this.act.v)
-            } 
-            this.act = null// Сброс команды
+            this.socketSend("turn", this.moment)
         }
     }
 }
