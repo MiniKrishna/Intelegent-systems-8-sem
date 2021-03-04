@@ -53,7 +53,7 @@ module.exports =  {
             }
             let objectName = element.cmd.p.join('');
             if (Flags.contains(objectName)){
-                flagsNearPlayer.push({dist: element.p, pos: Flags[objectName]}) // добовляем в массив ближайщих флагов, то что видит игрок и реальные координаты флага
+                flagsNearPlayer.push({dist: element.p, pos: Flags[objectName]}) // добавляем в массив ближайщих флагов то, что видит игрок и реальные координаты флага
             }
             //console.log(objectName);
 
