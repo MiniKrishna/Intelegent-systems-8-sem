@@ -71,7 +71,10 @@ class Agent {
 	if (cmdType === "see") {
 	    let visionRes = Vision.calculatePos(gameObjects);
 
-        console.log("Player: [x:" + visionRes.player.x + " y:" +visionRes.player.y + "]");
+        console.log("Myself: [x:" + visionRes.myself.x + " y:" +visionRes.myself.y + "]");
+        visionRes.players.forEach(element => {
+        console.log("Player: " + element.team + " [x:" + element.pos.x + " y:" + element.pos.y  + "]");
+        });
 	}
     }
     sendCmd() {
