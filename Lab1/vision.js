@@ -46,27 +46,27 @@ module.exports =  {
             return a.p[0] - b.p[0];
         })
         //console.log(gameObjects);
-        let nearFlags = [];
+        let flagsNearPlayer = [];
         gameObjects.forEach(element => {
-            if (nearFlags.length == 3) {
+            if (flagsNearPlayer.length == 3) {
                 return
             }
             let objectName = element.cmd.p.join('');
             if (Flags.contains(objectName)){
-                nearFlags.push({dist: element.p, pos: Flags[objectName]}) // добовляем в массив ближайщих флагов, то что видит игрок и реальные координаты флага
+                flagsNearPlayer.push({dist: element.p, pos: Flags[objectName]}) // добовляем в массив ближайщих флагов, то что видит игрок и реальные координаты флага
             }
             //console.log(objectName);
 
         });
-        this.calculatePlayer(nearFlags);
+        let playerCoord = this.calculateCoord(flagsNearPlayer);
         
 
     },
 
-    calculatePlayer(flags){
-        console.log(flags);
+    calculateCoord(points){
+        console.log(points);
         if (flags.length == 2){
-            
+
         }
     }
 
