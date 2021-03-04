@@ -49,26 +49,112 @@ module.exports =  {
         let flagsNearPlayer = [];
         gameObjects.forEach(element => {
             if (flagsNearPlayer.length == 3) {
-                return
+                return;
             }
             let objectName = element.cmd.p.join('');
-            if (Flags.contains(objectName)){
-                flagsNearPlayer.push({dist: element.p, pos: Flags[objectName]}) // добавляем в массив ближайщих флагов то, что видит игрок и реальные координаты флага
+            if (Flags.contains(objectName)) {
+                flagsNearPlayer.push({dist: element.p, pos: Flags[objectName]}) // добавляем в массив ближайших флагов то, что видит игрок и реальные координаты флага
             }
             //console.log(objectName);
 
         });
         let playerCoord = this.calculateCoord(flagsNearPlayer);
-        
-
+        console.log(playerCoord[0], playerCoord[1]);
+        return {player: playerCoord};
     },
-
+    
+    calculateMistake(x, x3, y, y3, d3) {
+        return Math.abs((x - x3)**2 + (y - y3)**2 - d3**2);
+    },
+    
     calculateCoord(points){
-        console.log(points);
-        if (flags.length == 2){
-
+        let x = 0;
+        let y = 0;
+        console.log(points.length);
+        if (points.length === 3) {
+            let x1 = points[0].pos.x;
+            let x2 = points[1].pos.x;
+            let x3 = points[2].pos.x;
+            let y1 = points[0].pos.y;
+            let y2 = points[1].pos.y;
+            let y3 = points[2].pos.y;
+            let d1 = points[0].dist[0];
+            let d2 = points[1].dist[0];
+            let d3 = points[2].dist[0];
+            
+            if (x1 === x2) {
+                y = ((d1**2 - d2**2) / (y2 - y1) + y1 + y2) / 2;
+                let xx1 = x1 + Math.sqrt(d1**2 - (y - y1)**2);
+                let xx2 = x1 - Math.sqrt(d1**2 - (y - y1)**2);
+                if (Math.abs(xx1) < 54 && Math.abs(xx2) < 54) {
+                	// choose best
+                	if (this.calculateMistake(xx1, x3, y, y3, d3) < this.calculateMistake(xx2, x3, y, y3, d3))
+                	    x = xx1;
+                	else
+                	    x = xx2;
+                } 
+                else if (Math.abs(xx1) < 54) x = xx1;
+                else x = xx2;
+                console.log("x1 == x2", "xx1 = ", xx1, "xx2 = ", xx2);
+;            }
+            else if (x1 === x3) {
+                y = ((d1**2 - d3**2) / (y3 - y1) + y1 + y3) / 2;
+                let xx1 = x1 + Math.sqrt(d1**2 - (y - y1)**2);
+                let xx2 = x1 - Math.sqrt(d1**2 - (y - y1)**2);
+                if (Math.abs(xx1) < 54 && Math.abs(xx2) < 54) {
+                	// choose best
+                	if (this.calculateMistake(xx1, x3, y, y3, d3) < this.calculateMistake(xx2, x3, y, y3, d3))
+                	    x = xx1;
+                	else
+                	    x = xx2;
+                } 
+                else if (Math.abs(xx1) < 54) x = xx1;
+                else x = xx3;
+                console.log("x1 == x3", "xx1 = ", xx1, "xx2 = ", xx2);
+            }
+            else if (y1 === y2) {
+                x = ((d1**2 - d2**2) / (x2 - x1) + x1 + x2) / 2;
+                let yy1 = y1 + Math.sqrt(d1**2 - (x - x1)**2);
+                let yy2 = y1 - Math.sqrt(d1**2 - (x - x1)**2);
+                if (Math.abs(yy1) < 32 && Math.abs(yy2) < 32) {
+                	// choose best
+                	if (this.calculateMistake(x, x3, yy1, y3, d3) < this.calculateMistake(x, x3, yy1, y3, d3))
+                	    y = yy1;
+                	else
+                	    y = yy2;
+                } 
+                else if (Math.abs(yy1) < 32) y = yy1;
+                else y = yy2;
+                console.log("y1 == y2", "y1 = ", yy1, "yy2 = ", yy2);
+            }
+            else if (y1 === y3) {
+		 x = ((d1**2 - d3**2) / (x3 - x1) + x1 + x3) / 2;
+                let yy1 = y1 + Math.sqrt(d1**2 - (x - x1)**2);
+                let yy2 = y1 - Math.sqrt(d1**2 - (x - x1)**2);
+                if (Math.abs(yy1) < 32 && Math.abs(yy2) < 32) {
+                	// choose best
+                	if (this.calculateMistake(x, x3, yy1, y3, d3) < this.calculateMistake(x, x3, yy1, y3, d3))
+                	    y = yy1;
+                	else
+                	    y = yy2;
+                } 
+                else if (Math.abs(yy1) < 32) y = yy1;
+                else y = yy2;
+                console.log("y1 == y3", "yy1 = ", y1, "yy2 = ", yy2);
+            }
+            else {
+                let a1 = (y1 - y2) / (x2 - x1);
+                let b1 = (y2**2 - y1**2 + x2**2 - x1**2 + d1**2 - d2**2) / 2 / (x2 - x1);
+                let a2 = (y1 - y3) / (x3 - x1);
+                let b2 = (y3**2 - y1**2 + x3**2 - x1**2 + d1**2 - d3**2) / 2 / (x3 - x1); 
+                console.log(a1, b1, a2, b2);
+                y = (b1 - b2) / (a2 - a1);
+                x = a1 * y + b1; 
+            }
         }
+        else if (points.length === 2) {
+		
+        }
+        return [x, y];
     }
-
-
 }

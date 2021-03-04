@@ -67,6 +67,7 @@ class Agent {
     // msg - text message with all information
     // cmdType - type of command
     // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
+        if (!this.run) return;
 	if (cmdType === "see") {
 	    Vision.calculatePos(gameObjects);
 	    // ТЗ
