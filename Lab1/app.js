@@ -5,4 +5,4 @@ myAgent.readParam();
 require('./socket')(myAgent, "teamA", VERSION) //Настройка сокета
 let enemyAgent = new Agent(); // Создание экземпляра агента
 require('./socket')(enemyAgent, "teamB", VERSION) //Настройка сокета
-enemyAgent.socketSend("move",`-15 10`);
+enemyAgent.socketSend("move",`-10 5`);

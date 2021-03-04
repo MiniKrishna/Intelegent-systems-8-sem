@@ -67,13 +67,11 @@ class Agent {
     // msg - text message with all information
     // cmdType - type of command
     // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
-        if (!this.run) return;
+        if (!this.run || this.moment == 0) return;
 	if (cmdType === "see") {
-	    Vision.calculatePos(gameObjects);
-	    // ТЗ
-	    // 1) ВыЧЛЕНить все существующие флаги
-	    // 2) В зависимости от их количества применить алгоритм вычисления координат игрока
-	    // 3) Добавить вычисление координат игрока-соперника
+	    let visionRes = Vision.calculatePos(gameObjects);
+
+        console.log("Player: [x:" + visionRes.player.x + " y:" +visionRes.player.y + "]");
 	}
     }
     sendCmd() {
