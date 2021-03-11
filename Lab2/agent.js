@@ -75,6 +75,10 @@ class Agent {
         if (cmdType === "see") {
             // visionRes = {myself: {{x},{y}}, players: [{pos: {{x},{y}}, team: ""}], flags: {name: " ", dist, angle}}
             let visionRes = Vision.calculatePos(gameObjects);
+            if (visionRes.myself == undefined) {
+                visionRes.myself = this.env.vision.myself;
+            }
+
             this.env.vision = visionRes;
             this.envReady.visionMsgGot = true;
         }
