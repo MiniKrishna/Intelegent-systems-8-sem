@@ -8,7 +8,6 @@ class Controller{
         this.reachPoint = {};
         this.agent = agent;
  		this.reset();
-        this.pla
     }
 
     processEnv(env){
