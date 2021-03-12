@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd ../rcssserver-16.0.0
+ctrl + C
+rcssserver &
+cd ../rcssmonitor-16.0.0
+rcssmonitor &
+cd ../Intelegent-systems-8-sem
+node Lab2/app.js

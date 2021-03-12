@@ -102,7 +102,7 @@ module.exports =  {
         if (points.length != 3){
             return;
         }
-        console.log(points);
+        //console.log(points);
         
         let x1 = points[0].pos.x;
         let x2 = points[1].pos.x;

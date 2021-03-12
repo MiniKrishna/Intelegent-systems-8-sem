@@ -8,6 +8,7 @@ class Controller{
         this.reachPoint = {};
         this.agent = agent;
  		this.reset();
+        this.pla
     }
 
     processEnv(env){
@@ -15,7 +16,7 @@ class Controller{
         let playerAngle = env.sense.find((elem) => {
              return elem.cmd === "speed";
         }).p[1];
-        console.log("Player angle = " + playerAngle);
+        //console.log("Player angle = " + playerAngle);
         
         this.recalculate(env, playerAngle, playerPos);
 
@@ -40,14 +41,18 @@ class Controller{
                 return item.name === this.purposes[this.purposeIter].fl;
             })
             if (visibleFlag != undefined){
-                // если видит, берем дистанцию до флага и угол из того, что игрок видит 
+                // если видит, берем дистанцию до флага и угол из того, что игрок видит
+                console.log("Видим флаг") 
                 this.objectDistance = visibleFlag.dist;
-                     this.angleToResearchPoint = visibleFlag.angle;
+                this.angleToResearchPoint = visibleFlag.angle;
             }
             else { 
                 // если не видит, то расчитываем сами
+                console.log("Не видим флаг") 
+                console.log("Угол игрока = " + playerAngle );
+                console.log("Угол объекта = " + this.calculateAngle(playerPos, this.reachPoint));
                 this.objectDistance = Flags.distance(playerPos, this.reachPoint);
-                     this.angleToResearchPoint = playerAngle - this.calculateAngle(playerPos, this.reachPoint);
+                this.angleToResearchPoint = playerAngle - this.calculateAngle(playerPos, this.reachPoint);
             }  
         }
     }
@@ -66,16 +71,22 @@ class Controller{
 
     // поворачивает игрока в направлении цели
     moveToPoint(){
+        //console.log("objectDistance = " + this.objectDistance)
+        this.angleToResearchPoint = Math.round(this.angleToResearchPoint);
         if (this.angleToResearchPoint >= 3){
             this.agent.socketSend("turn", this.angleToResearchPoint);
+            console.log("Повернули на angleToResearchPoint = " + this.angleToResearchPoint + "\n");
         }
         else{
+            console.log("Вперед \n")
             this.agent.socketSend("dash", "100");
         }
     }
 
     // возвращает угол в градусах между двумя точками
     calculateAngle(point1, point2){
+        //console.log("point1 = " + point1);
+        //console.log("point2 = " + point2)
         return Math.atan((point1.y - point2.y) / (point1.x - point2.x)) * 180 / Math.PI;
     }
 }

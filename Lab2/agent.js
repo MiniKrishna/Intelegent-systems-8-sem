@@ -73,6 +73,7 @@ class Agent {
         // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
 
         if (cmdType === "see") {
+            //console.log("Time see = " + gameObjects[0])
             // visionRes = {myself: {{x},{y}}, players: [{pos: {{x},{y}}, team: ""}], flags: {name: " ", dist, angle}}
             let visionRes = Vision.calculatePos(gameObjects);
             if (visionRes.myself == undefined) {
@@ -83,7 +84,7 @@ class Agent {
             this.envReady.visionMsgGot = true;
         }
         else if (cmdType === "sense_body"){
-
+            //console.log("Time sense = " + gameObjects[0])
             gameObjects.splice(0,1);
             let senseRes = gameObjects;
             //console.log(senseRes)
