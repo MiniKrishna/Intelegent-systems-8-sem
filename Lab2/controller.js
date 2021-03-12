@@ -8,6 +8,11 @@ class Controller{
         this.reachPoint = {};
         this.agent = agent;
  		this.reset();
+
+        console.log("A = " + this.calculateAngle({x: 0, y: 0}, {x: 50, y: 30}));
+        console.log("B = " + this.calculateAngle({x: 0, y: 0}, {x: 50, y: -30}));
+        console.log("C = " + this.calculateAngle({x: 0, y: 0}, {x: -50, y: -30}));
+        console.log("D = " + this.calculateAngle({x: 0, y: 0}, {x: -50, y: 30}));
     }
 
     processEnv(env){
