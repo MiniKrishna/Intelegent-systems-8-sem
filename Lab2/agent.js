@@ -4,8 +4,8 @@ const Vision = require('./vision') // Подключения модуля зре
 const Controller = require('./controller')
 
 
-const purposes = [{act: "flag", fl: "frb"}, {act: "flag", fl: "gl"},
-{act: "flag", fl: "fc"}, {act: "kick", fl: "b", goal: "gr"}];
+const purposes = [{act: "flag", fl: "fc"}, {act: "flag", fl: "fplc"},
+{act: "flag", fl: "fplt"}, {act: "kick", fl: "b", goal: "gr"}];
 
 class Agent {
     constructor() {
@@ -17,6 +17,7 @@ class Agent {
             ready(){return this.visionMsgGot && this.senseMsgGot}, 
             reset(){ this.senseMsgGot = false; this.visionMsgGot = false}
         };
+        this.playerAngle = 0;
     }
     async readParam() {
         this.rl = readline.createInterface({ // Чтение консоли
@@ -64,8 +65,11 @@ class Agent {
         this.analyzeEnv(data.msg, data.cmd, data.p) // Обработка
     }
     initAgent(p) {
-        if (p[0] == "r") this.position = "r" // Правая половина поля
-        if (p[1]) this.id = p[1] // id игрока
+        if (p[0] == "r"){
+            this.position = "r"; // Правая половина поля
+            this.playerAngle = 180;
+        } 
+        if (p[1]) this.id = p[1]; // id игрока
     }
     analyzeEnv(msg, cmdType, gameObjects) { // Анализ сообщения 
         // msg - text message with all information
@@ -73,8 +77,6 @@ class Agent {
         // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
 
         if (cmdType === "see") {
-            //console.log("Time see = " + gameObjects[0])
-            // visionRes = {myself: {{x},{y}}, players: [{pos: {{x},{y}}, team: ""}], flags: {name: " ", dist, angle}}
             let visionRes = Vision.calculatePos(gameObjects);
             if (visionRes.myself == undefined) {
                 visionRes.myself = this.env.vision.myself;
@@ -84,10 +86,8 @@ class Agent {
             this.envReady.visionMsgGot = true;
         }
         else if (cmdType === "sense_body"){
-            //console.log("Time sense = " + gameObjects[0])
             gameObjects.splice(0,1);
             let senseRes = gameObjects;
-            //console.log(senseRes)
             this.env.sense = senseRes;
             this.envReady.senseMsgGot = true;
         }

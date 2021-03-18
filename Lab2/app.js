@@ -1,8 +1,8 @@
-const Agent = require('./agent') // Импорт агента
-const VERSION = 7 // Версия сервера
+const Agent = require('./agent'); // Импорт агента
+const VERSION = 7; // Версия сервера
 
 let myAgent = new Agent(); // Создание экземпляра агента
-require('./socket')(myAgent, "teamA", VERSION) //Настройка сокета
+require('./socket')(myAgent, "teamA", VERSION); //Настройка сокета
 //myAgent.readParam();
 
 //let myAgent1 = new Agent(); // Создание экземпляра агента
