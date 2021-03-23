@@ -7,18 +7,34 @@ class Controller{
         this.curAct = this.purposes[this.purposeIter].act;
         this.reachPoint = {};
         this.agent = agent;
+        this.calcAngleManually = false;
     }
 
     processEnv(env){
         let playerPos = env.vision.myself;
+        //console.log
+        if (env.vision.myAngle != undefined){
+            this.agent.playerAngle = env.vision.myAngle;
+            this.calcAngleManually = false;
+        }
+        else{
+            this.calcAngleManually = true;
+            console.log("Считаем угол сами")
+        }
+
+        console.log(`playerAngle =  ${this.agent.playerAngle}`);
 
         this.recalculate(env, playerPos);
 		console.log(this.objectDistance);
         if (this.objectDistance <= 3){
             if (this.curAct === "flag"){
+                console.log("Поменяли цель \n")
                 this.nextAct();
-                this.agent.socketSend("dash", "-0");
-                this.processEnv(env);
+                if(env.vision.flags.length < 2){
+                    //this.agent.socketSend("turn", "90");
+                }
+                //this.agent.socketSend("dash", "0");
+                //this.processEnv(env);
             }
         }
         else {
@@ -47,8 +63,8 @@ class Controller{
                 console.log("Не видим флаг") 
 
                 this.objectDistance = Flags.distance(playerPos, this.reachPoint);
-                this.angleToResearchPoint = this.agent.playerAngle - this.calculateAngle(playerPos, this.reachPoint);
-                console.log("Player angle -" + this.agent.playerAngle + "  calculatedAngle - " + this.calculateAngle(playerPos, this.reachPoint));
+                this.angleToResearchPoint = this.agent.playerAngle - Flags.calculateAngle(playerPos, this.reachPoint);
+                console.log("calculatedAngle = " + Flags.calculateAngle(playerPos, this.reachPoint));
 
                 if (Math.abs(this.angleToResearchPoint) > 180) {
                 	if (this.angleToResearchPoint < 0)
@@ -65,7 +81,6 @@ class Controller{
 
     // переключаемся на следующую цель, обнулив вычисляемые параметры
     nextAct(){
-
         this.purposeIter = (this.purposeIter + 1) % this.purposes.length;
         this.curAct = this.purposes[this.purposeIter].act;
     }
@@ -74,36 +89,24 @@ class Controller{
     moveToPoint(){
 
         this.angleToResearchPoint = Math.round(this.angleToResearchPoint);
-        if (Math.abs(this.angleToResearchPoint) >= 5){
-        	console.log("Вот это папапаварот " + this.angleToResearchPoint);
+        if (Math.abs(this.angleToResearchPoint) >= 7){
+            //console.log("PlayerAngle = " + this.agent.playerAngle)
+        	console.log("Вот это папапаварот " + -this.angleToResearchPoint + "\n");
             this.agent.socketSend("turn", -this.angleToResearchPoint);
-            
-            this.agent.playerAngle += this.angleToResearchPoint;
-            this.agent.playerAngle = (this.agent.playerAngle % 360 + 360) % 360;
-            //console.log("Угол игрока ", this.agent.playerAngle);
+            if (this.calcAngleManually){
+                this.agent.playerAngle += this.angleToResearchPoint;
+                this.agent.playerAngle = (this.agent.playerAngle % 360 + 360) % 360;
+                //console.log("Угол игрока ", this.agent.playerAngle);
+            }
         }
         else{
             console.log("Вперед \n")
-            this.agent.socketSend("dash", "100");
+            let vel = 100;
+            this.agent.socketSend("dash", `${vel}`);
         }
     }
 
-    // возвращает угол в градусах между двумя точками
-    calculateAngle(point1, point2){
-    	console.log(point1);
-    	console.log(point2);
-    	let deltaX = point2.x - point1.x;
-    	let deltaY = point2.y - point1.y;
-    	let angle = Math.atan(deltaY / deltaX) * 180 / Math.PI;
 
-    	if (deltaX > 0) {
-    		if (deltaY > 0) return angle;
-    		else return 360 + angle;
-    	}
-    	else {
-    		return 180 + angle;
-    	}
-    }
 }
 
 

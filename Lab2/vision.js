@@ -1,7 +1,7 @@
 const Flags = require('./flags')
 
 module.exports =  {
-    calculatePos(gameObjects){
+    calculatePos(gameObjects, oldCoord){
         gameObjects.shift(); // удаляем первый элемент массива (номер такта)
         gameObjects.sort((a,b) => { // сортировка объектов по возрастанию расстояния до них
             return a.p[0] - b.p[0];
@@ -40,7 +40,16 @@ module.exports =  {
 
         // координаты игрока
         let myselfCoord = this.calculateCoord(flagsNearMyself);
+
+        if(myselfCoord.x === undefined || myselfCoord.y === undefined){
+            myselfCoord = oldCoord;
+        }
+        // угол игрока
+        result.myAngle = this.calculateAngle(myselfCoord, flagsNearMyself[0]);
         
+        if(result.myAngle == undefined){
+            //console.log("!!!!!!!!!!!!!!!!!!!!!!!! 0 флагов")
+        }
 
         result.players = [];
         // расчет координат игроков
@@ -59,20 +68,21 @@ module.exports =  {
 
     calculateSameCoord(d1,d2,first, second1, second2, d3, checkFirst, checkSecond, limit){
         let resFirst = (second2**2 - second1**2 + d1**2 - d2**2)/(2*(second2-second1));
-        console.log("resFirst = " + resFirst);
-        let resSecond_1 = first + Math.sqrt(d1**2 - (resFirst - second1)**2);
-        console.log("ressecond_1 = " + resSecond_1);
-        let resSecond_2 = first - Math.sqrt(d1**2 - (resFirst - second1)**2);
-        console.log("ressecond_2 = " + resSecond_2);
+        let resSecond_1 = first + Math.sqrt(Math.abs(d1**2 - (resFirst - second1)**2));
+        let resSecond_2 = first - Math.sqrt(Math.abs(d1**2 - (resFirst - second1)**2));
         let resSecond;
         if (Math.abs(resSecond_1) < limit && Math.abs(resSecond_2) > limit ) resSecond = resSecond_1;
         else if (Math.abs(resSecond_1) > limit && Math.abs(resSecond_2) < limit ) resSecond = resSecond_2;
-        else {
+        else if (d3 !== undefined){
             // choose best
             if (this.calculateMistake(resSecond_1, checkSecond, resFirst, checkFirst, d3) < this.calculateMistake(resSecond_2, checkSecond, resFirst, checkFirst, d3))
                 resSecond = resSecond_1
             else
                 resSecond = resSecond_2;
+        }
+        else{
+            resFirst = undefined;
+            resSecond = undefined;
         }
         return [resFirst, resSecond]; 
     },
@@ -94,63 +104,87 @@ module.exports =  {
         res.push({dist: [d2], pos: flags[1].pos});
         return this.calculateCoord(res);
     },
+
+    calculateAngle(player, flag){
+        let resAngle = undefined;
+        console.log(`player = x:  ${player.x} y: ${player.y}`)
+        console.log(`flag =  x: ${flag.pos.x} y: ${flag.pos.y}`);
+
+        if (player != undefined && player.x != undefined && player.y != undefined && flag != undefined){
+
+            let absolutAngle = Flags.calculateAngle(player,flag.pos);
+            console.log("absolutAngle = " + absolutAngle);
+            resAngle =  absolutAngle + flag.dist[1];
+            resAngle  = (resAngle  % 360 + 360) % 360;
+        }
+        return resAngle;
+    },
     
     calculateCoord(points){
         let x = undefined;
         let y = undefined;
 
-        if (points.length != 3){
-            return;
+        let flagsNum = points.length;
+        console.log(`Видим ${flagsNum} флага`);
+        if (flagsNum < 2){
+            return {x: x, y: y};
         }
-        console.log(points);
+
+
+        let d3 = undefined
+        let y3 = undefined
+        let x3 = undefined
+        if (flagsNum == 3){
+            d3 = points[2].dist[0];
+            y3 = points[2].pos.y;
+            x3 = points[2].pos.x;
+        }
+        //console.log(points);
         
         let x1 = points[0].pos.x;
         let x2 = points[1].pos.x;
-        let x3 = points[2].pos.x;
         let y1 = points[0].pos.y;
         let y2 = points[1].pos.y;
-        let y3 = points[2].pos.y;
         let d1 = points[0].dist[0];
         let d2 = points[1].dist[0];
-        let d3 = points[2].dist[0];
  
         
         if (x1 === x2) {
-            let coords = this.calculateSameCoord(d1,d2,x1,y1,y2,d3,y3,x3,54);
+            let coords = this.calculateSameCoord(d1,d2,x1,y1,y2,d3,y3,x3,60);
 
             x = coords[1];
             y = coords[0];
-            console.log("x1 = x2, y = " + y);
+            //console.log("x1 = x2, y = " + y);
         }
         else if (x1 === x3) {
-            let coords = this.calculateSameCoord(d1,d3,x1,y1,y3,d2,y2,x2,54);
+            let coords = this.calculateSameCoord(d1,d3,x1,y1,y3,d2,y2,x2,60);
 
             x = coords[1];
             y = coords[0];
-            console.log("x1 = x3, y = " + y);
+            //console.log("x1 = x3, y = " + y);
         }
         else if (y1 === y2 ) {
-            let coords = this.calculateSameCoord(d1,d2,y1,x1,x2,d3,x3,y3,32);
+            let coords = this.calculateSameCoord(d1,d2,y1,x1,x2,d3,x3,y3,40);
 
             x = coords[0];
             y = coords[1];
-            console.log("y1 = y2, y = " + y);
+            //console.log("y1 = y2, y = " + y);
         }
         else if (y1 === y3) {
-            let coords = this.calculateSameCoord(d1,d3,y1,x1,x3,d2,x2,y2,32);
+            let coords = this.calculateSameCoord(d1,d3,y1,x1,x3,d2,x2,y2,40);
 
             x = coords[0];
             y = coords[1];
-            console.log("y1 = y3, y = " + y);
+            //console.log("y1 = y3, y = " + y);
         }
-        else {
+        else if (flagsNum === 3) {
             let a1 = (y1 - y2) / (x2 - x1);
             let b1 = (y2**2 - y1**2 + x2**2 - x1**2 + d1**2 - d2**2) / 2 / (x2 - x1);
             let a2 = (y1 - y3) / (x3 - x1);
             let b2 = (y3**2 - y1**2 + x3**2 - x1**2 + d1**2 - d3**2) / 2 / (x3 - x1); 
             y = (b1 - b2) / (a2 - a1);
             x = a1 * y + b1; 
-            console.log("Not sample case, y = " + y);
+            //console.log("Not sample case, y = " + y);
         }
         
         return {x: x, y: y};

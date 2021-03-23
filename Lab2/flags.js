@@ -35,4 +35,19 @@ module.exports = {
 	        return true;
 	    return false;
 	},
+	calculateAngle(point1, point2){
+    	//console.log(point1);
+    	//console.log(point2);
+    	let deltaX = point2.x - point1.x;
+    	let deltaY = point2.y - point1.y;
+    	let angle = Math.atan(deltaY / deltaX) * 180 / Math.PI;
+
+    	if (deltaX > 0) {
+    		if (deltaY > 0) return angle;
+    		else return 360 + angle;
+    	}
+    	else {
+    		return 180 + angle;
+    	}
+    }
 }

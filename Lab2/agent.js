@@ -4,15 +4,15 @@ const Vision = require('./vision') // Подключения модуля зре
 const Controller = require('./controller')
 
 
-const purposes = [{act: "flag", fl: "fc"}, {act: "flag", fl: "fplc"},
-{act: "flag", fl: "ftl30"}, {act: "flag", fl: "fprt"}];
+const purposes = [{act: "flag", fl: "fplb"}, {act: "flag", fl: "fprt"},
+{act: "flag", fl: "flt"}, {act: "flag", fl: "fc"}];
 
 class Agent {
     constructor() {
         this.position = "l" // По умолчанию - левая половина поля
         this.run = false // Игра начата
         this.controller = new Controller(purposes, this);
-        this.env = {};
+        this.env = {vision: {myself: {}}};
         this.envReady = {visionMsgGot: false, senseMsgGot: false, 
             ready(){return this.visionMsgGot && this.senseMsgGot}, 
             reset(){ this.senseMsgGot = false; this.visionMsgGot = false}
@@ -76,14 +76,9 @@ class Agent {
         // cmdType - type of command
         // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
 
-        if (cmdType === "see") {
+        if (cmdType === "see"){
             // visionRes = {myself: {{x},{y}}, players: [{pos: {{x},{y}}, team: ""}], flags: {name: " ", dist, angle}}
-            let visionRes = Vision.calculatePos(gameObjects);
-            if (visionRes.myself == undefined || visionRes.myself.x === NaN || visionRes.myself.y === NaN) {
-                visionRes.myself = this.env.vision.myself;
-                console.log("SelfCoords" + visionRes.myself);
-            }
-      //      console.log("SelfCoords" + visionRes.myself);
+            let visionRes = Vision.calculatePos(gameObjects, this.env.vision.myself);
             this.env.vision = visionRes;
             this.envReady.visionMsgGot = true;
         }
@@ -102,6 +97,13 @@ class Agent {
     }
     sendCmd() {
 
+    }
+    move(pos){
+        console.log(`${pos.x} ${pos.y}`);
+        setTimeout(()=> {
+            this.socketSend("move", `${pos.x} ${pos.y}`);
+        }, 1000)
+        this.env.vision.myself = pos;
     }
 }
 module.exports = Agent // Экспорт игрока
