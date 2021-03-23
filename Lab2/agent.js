@@ -5,7 +5,7 @@ const Controller = require('./controller')
 
 
 const purposes = [{act: "flag", fl: "fc"}, {act: "flag", fl: "fplc"},
-{act: "flag", fl: "fplt"}, {act: "kick", fl: "b", goal: "gr"}];
+{act: "flag", fl: "ftl30"}, {act: "flag", fl: "fprt"}];
 
 class Agent {
     constructor() {
@@ -77,11 +77,13 @@ class Agent {
         // gameObjects - array, where type of elemement is [[params], [objectName]]. ObjectName is array of literals
 
         if (cmdType === "see") {
+            // visionRes = {myself: {{x},{y}}, players: [{pos: {{x},{y}}, team: ""}], flags: {name: " ", dist, angle}}
             let visionRes = Vision.calculatePos(gameObjects);
-            if (visionRes.myself == undefined) {
+            if (visionRes.myself == undefined || visionRes.myself.x === NaN || visionRes.myself.y === NaN) {
                 visionRes.myself = this.env.vision.myself;
+                console.log("SelfCoords" + visionRes.myself);
             }
-
+      //      console.log("SelfCoords" + visionRes.myself);
             this.env.vision = visionRes;
             this.envReady.visionMsgGot = true;
         }

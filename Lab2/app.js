@@ -9,7 +9,7 @@ require('./socket')(myAgent, "teamA", VERSION); //Настройка сокет�
 //require('./socket')(myAgent1, "teamB", VERSION) //Настройка сокета
 
 setTimeout(()=> {
-    myAgent.socketSend("move", "-10 10");
+    myAgent.socketSend("move", "-30 0");
     //myAgent1.socketSend("move", "-20 -10");
 }, 1000)
 
