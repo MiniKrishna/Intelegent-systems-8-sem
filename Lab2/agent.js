@@ -4,8 +4,8 @@ const Vision = require('./vision') // Подключения модуля зре
 const Controller = require('./controller')
 
 
-const purposes = [{act: "flag", fl: "fplb"}, {act: "flag", fl: "fprt"},
-{act: "flag", fl: "flt"}, {act: "flag", fl: "fc"}];
+const purposes = [{act: "kick", fl: "b", goal: "gr"},{act: "flag", fl: "fplb"}, {act: "flag", fl: "frt"},
+{act: "flag", fl: "fprt"}, {act: "flag", fl: "fc"}];
 
 class Agent {
     constructor() {
@@ -81,6 +81,12 @@ class Agent {
             let visionRes = Vision.calculatePos(gameObjects, this.env.vision.myself);
             this.env.vision = visionRes;
             this.envReady.visionMsgGot = true;
+        }
+        else if(cmdType === "hear"){
+            console.log(gameObjects);
+            if(gameObjects[2].startsWith("goal")){
+                this.controller.nextAct();
+            }
         }
         else if (cmdType === "sense_body"){
             gameObjects.splice(0,1);

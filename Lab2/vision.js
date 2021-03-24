@@ -15,8 +15,14 @@ module.exports =  {
 
         let players = [];
         gameObjects.forEach(element => {
+            // Игроки
             if (element.cmd.p[0] == "p"){
                 players.push({dist: element.p, team : element.cmd.p.join('')})
+            }
+            // мяч
+            else if (element.cmd.p[0] == "b"){
+                //console.log(element);
+                result.ball = element.p;
             }
 
             let objectName = element.cmd.p.join('');
@@ -107,13 +113,13 @@ module.exports =  {
 
     calculateAngle(player, flag){
         let resAngle = undefined;
-        console.log(`player = x:  ${player.x} y: ${player.y}`)
-        console.log(`flag =  x: ${flag.pos.x} y: ${flag.pos.y}`);
+        //console.log(`player = x:  ${player.x} y: ${player.y}`)
+        //console.log(`flag =  x: ${flag.pos.x} y: ${flag.pos.y}`);
 
         if (player != undefined && player.x != undefined && player.y != undefined && flag != undefined){
 
             let absolutAngle = Flags.calculateAngle(player,flag.pos);
-            console.log("absolutAngle = " + absolutAngle);
+            //console.log("absolutAngle = " + absolutAngle);
             resAngle =  absolutAngle + flag.dist[1];
             resAngle  = (resAngle  % 360 + 360) % 360;
         }
@@ -125,7 +131,7 @@ module.exports =  {
         let y = undefined;
 
         let flagsNum = points.length;
-        console.log(`Видим ${flagsNum} флага`);
+        //console.log(`Видим ${flagsNum} флага`);
         if (flagsNum < 2){
             return {x: x, y: y};
         }
