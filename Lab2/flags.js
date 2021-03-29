@@ -41,6 +41,7 @@ module.exports = {
     	let deltaX = point2.x - point1.x;
     	let deltaY = point2.y - point1.y;
     	let angle = Math.atan(deltaY / deltaX) * 180 / Math.PI;
+		//console.log(`angle - ${angle} = Math.atan(${deltaY} / ${deltaX}) * 180/ Math.PI`)
 
     	if (deltaX > 0) {
     		if (deltaY > 0) return angle;

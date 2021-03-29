@@ -3,9 +3,7 @@ const readline = require('readline') // Подключение модуля вв
 const Vision = require('./vision') // Подключения модуля зрения
 const Controller = require('./controller')
 
-
-const purposes = [{act: "kick", fl: "b", goal: "gr"},{act: "flag", fl: "fplb"}, {act: "flag", fl: "frt"},
-{act: "flag", fl: "fprt"}, {act: "flag", fl: "fc"}];
+const purposes = [{act: "flag", fl: "gl"}, {act: "kick", fl: "b", goal: "gr"}];
 
 class Agent {
     constructor() {

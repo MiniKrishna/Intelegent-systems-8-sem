@@ -48,6 +48,8 @@ class Controller{
     calculateToFlag(playerPos, flagName, env){
         let reachPoint = Flags[flagName];
 
+        //console.log(playerPos);
+
         // проверяем видит ли игрок нужный флаг 
         let visibleFlag = env.vision.flags.find((item) => {
             return item.name === flagName;
@@ -65,7 +67,8 @@ class Controller{
 
             this.objectDistance = Flags.distance(playerPos, reachPoint);
             this.angleToResearchPoint = this.agent.playerAngle - Flags.calculateAngle(playerPos, reachPoint);
-            //console.log("calculatedAngle = " + Flags.calculateAngle(playerPos, this.reachPoint));
+            //console.log("playerAngle = " + this.agent.playerAngle);
+            //console.log("calculatedAngle = " + Flags.calculateAngle(playerPos, reachPoint));
 
             if (Math.abs(this.angleToResearchPoint) > 180) {
                 if (this.angleToResearchPoint < 0)
@@ -99,13 +102,14 @@ class Controller{
                 //console.log(env.vision.ball);
                 let ballDist = env.vision.ball[0];
                 if (ballDist <= 0.5){
-                    // если мы с мячом бежим к воротам
+                    // если мы с мячом
                     this.ballControl = true;
                     this.calculateToFlag(playerPos, this.purposes[this.purposeIter].goal, env);
-                    let kickPower = 100
+                    let kickPower = 50
                     if (this.objectDistance > 25){
                         kickPower = 50
                     }
+                    //console.log(-this.angleToResearchPoint);
                     this.agent.socketSend("kick", `${kickPower} ${-this.angleToResearchPoint}`);
                 }
                 else {
@@ -120,7 +124,7 @@ class Controller{
 
     // переключаемся на следующую цель, обнулив вычисляемые параметры
     nextAct(){
-        console.log("Поменяли цель \n")
+        //console.log("Поменяли цель \n")
         this.purposeIter = (this.purposeIter + 1) % this.purposes.length;
         this.curAct = this.purposes[this.purposeIter].act;
     }

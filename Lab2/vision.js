@@ -50,12 +50,16 @@ module.exports =  {
         if(myselfCoord.x === undefined || myselfCoord.y === undefined){
             myselfCoord = oldCoord;
         }
+
+        //console.log("mycoord =  x-" + myselfCoord.x + " y-" +  myselfCoord.y);
         // угол игрока
-        result.myAngle = this.calculateAngle(myselfCoord, flagsNearMyself[0]);
+        //result.myAngle = this.calculateAngle(myselfCoord, flagsNearMyself);
+
         
-        if(result.myAngle == undefined){
-            //console.log("!!!!!!!!!!!!!!!!!!!!!!!! 0 флагов")
-        }
+        //console.log(flagsNearMyself);
+        //console.log("myAngle = " + result.myAngle);
+
+
 
         result.players = [];
         // расчет координат игроков
@@ -111,18 +115,33 @@ module.exports =  {
         return this.calculateCoord(res);
     },
 
-    calculateAngle(player, flag){
-        let resAngle = undefined;
-        //console.log(`player = x:  ${player.x} y: ${player.y}`)
-        //console.log(`flag =  x: ${flag.pos.x} y: ${flag.pos.y}`);
+    calculateAngle(player, flags){
 
-        if (player != undefined && player.x != undefined && player.y != undefined && flag != undefined){
-
-            let absolutAngle = Flags.calculateAngle(player,flag.pos);
-            //console.log("absolutAngle = " + absolutAngle);
-            resAngle =  absolutAngle + flag.dist[1];
-            resAngle  = (resAngle  % 360 + 360) % 360;
+        if (flags.length == 0){
+            return undefined
         }
+
+        let resAngle;
+        let flag = undefined;
+        
+
+        flags.forEach(element => {
+            let deltaX = player.x - element.pos.x;
+            let deltaY = player.y - element.pos.y;
+            if (Math.abs(deltaX) > 3 && Math.abs(deltaY) > 3){
+                flag = element;
+            }
+        });
+        if (flag === undefined){
+            flag = flags[0];
+        }
+        
+        let absolutAngle = Flags.calculateAngle(player,flag.pos);
+        resAngle = absolutAngle + flag.dist[1];
+
+        //console.log(`resAngle = ${resAngle} = ${absolutAngle} + ${flag.dist[1]}`)
+        resAngle = (resAngle % 360 + 360) % 360;
+
         return resAngle;
     },
     
@@ -156,34 +175,35 @@ module.exports =  {
  
         
         if (x1 === x2) {
-            let coords = this.calculateSameCoord(d1,d2,x1,y1,y2,d3,y3,x3,60);
+            let coords = this.calculateSameCoord(d1,d2,x1,y1,y2,d3,y3,x3,54);
 
             x = coords[1];
             y = coords[0];
             //console.log("x1 = x2, y = " + y);
         }
         else if (x1 === x3) {
-            let coords = this.calculateSameCoord(d1,d3,x1,y1,y3,d2,y2,x2,60);
+            let coords = this.calculateSameCoord(d1,d3,x1,y1,y3,d2,y2,x2,54);
 
             x = coords[1];
             y = coords[0];
             //console.log("x1 = x3, y = " + y);
         }
         else if (y1 === y2 ) {
-            let coords = this.calculateSameCoord(d1,d2,y1,x1,x2,d3,x3,y3,40);
+            let coords = this.calculateSameCoord(d1,d2,y1,x1,x2,d3,x3,y3,32);
 
             x = coords[0];
             y = coords[1];
             //console.log("y1 = y2, y = " + y);
         }
         else if (y1 === y3) {
-            let coords = this.calculateSameCoord(d1,d3,y1,x1,x3,d2,x2,y2,40);
+            let coords = this.calculateSameCoord(d1,d3,y1,x1,x3,d2,x2,y2,32);
 
             x = coords[0];
             y = coords[1];
             //console.log("y1 = y3, y = " + y);
         }
-        else if (flagsNum === 3) {
+        else{
+            if (flagsNum !== 3) return {x: x, y: y};
             let a1 = (y1 - y2) / (x2 - x1);
             let b1 = (y2**2 - y1**2 + x2**2 - x1**2 + d1**2 - d2**2) / 2 / (x2 - x1);
             let a2 = (y1 - y3) / (x3 - x1);

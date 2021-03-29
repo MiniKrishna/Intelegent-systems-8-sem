@@ -9,7 +9,7 @@ require('./socket')(myAgent, "teamA", VERSION); //Настройка сокет�
 //let myAgent1 = new Agent(); // Создание экземпляра агента
 //require('./socket')(myAgent1, "teamB", VERSION) //Настройка сокета
 
-myAgent.move({x: -30, y: 10});
+myAgent.move({x: -20, y: -10});
 
 
 
