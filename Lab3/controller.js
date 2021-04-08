@@ -7,6 +7,7 @@ class Controller{
         this.calcAngleManually = false;
         this.ballControl = false;
         this.dt = trees.PlayerTree;
+        this.sequenceIter = 0;
     }
 
     processEnv(env){
@@ -30,7 +31,7 @@ class Controller{
     }
 
     getAction(title){
-       // console.log(title);
+        //console.log(title);
         const action = this.dt[title]
         if(typeof action.exec == "function") {
             action.exec(this, this.dt.state)
@@ -54,8 +55,8 @@ class Controller{
     }
 
     nextAct(){
-        if (this.agent.goalie == true) return;
-        this.dt.state.sequenceIter = (this.dt.state.sequenceIter + 1) % this.dt.state.sequence.length;
+        if (this.agent.goalie === true) return;
+        this.sequenceIter = (this.sequenceIter + 1) % this.dt.state.sequence.length;
     }
 
 

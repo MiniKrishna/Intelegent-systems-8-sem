@@ -128,6 +128,7 @@ module.exports =  {
     },
 
     calculateObjectCoord(flags, player, object){
+        if (flags.length < 2) return undefined;
         let res = [];
         res.push({dist: object, pos: player});
         let dist_flag1 = flags[0].dist[0];

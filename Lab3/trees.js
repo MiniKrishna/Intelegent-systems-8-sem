@@ -2,16 +2,13 @@ const flags = require("./flags");
 
 const PlayerTree = {
     state: {
-        sequenceIter: 0,
         sequence: [{act: "flag", fl: "fplt"}, {act: "flag", fl: "gl"},
         {act: "kick", fl: "b", goal: "gr"}],
-        command: null,
         reachPoint: {},
     },
     root: {
         exec(controller, state) { 
-            state.action = state.sequence[state.sequenceIter]; 
-            state.command = null 
+            state.action = state.sequence[controller.sequenceIter];  
         },
         next: "actVal",
     },
@@ -132,7 +129,7 @@ const PlayerTree = {
     },
     leaderReach: {
         condition(controller, state){
-            return flags.distance(state.reachPoint, state.leader.pos) < 5
+            return flags.distance(state.reachPoint, state.leader.pos) < 4
         },
         trueCond: "reachFlag",
         falseCond: "moveBehind",
@@ -142,7 +139,6 @@ const PlayerTree = {
         condition(controller, state){
             controller.objectDistance = state.leader.dist[0];
             controller.angleToResearchPoint = -state.leader.dist[1];
-            //console.log(controller.angleToResearchPoint);
             state.vel = 80;
             return controller.objectDistance > 10
         },
@@ -154,8 +150,11 @@ const PlayerTree = {
         condition(controller, state){
             if ((-controller.angleToResearchPoint) < 40 && (-controller.angleToResearchPoint) > 20){
                 state.vel = 50;
-                if (controller.objectDistance < 5){
+                if (controller.objectDistance < 7){
                     state.vel = 30;
+                }
+                else if (controller.objectDistance < 3){
+                    state.vel = 0;
                 }
                 return true
             }
@@ -177,7 +176,7 @@ const PlayerTree = {
 
 
 
-
+/*
 
 const SeqTree = {
     state: {
@@ -290,6 +289,8 @@ const SeqTree = {
     }
 
 }
+
+*/
 
 
 const GoalieTree = {
@@ -407,4 +408,4 @@ const GoalieTree = {
 
 module.exports.PlayerTree = PlayerTree;
 module.exports.GoalieTree = GoalieTree;
-module.exports.SeqTree = SeqTree;
+//module.exports.SeqTree = SeqTree;
