@@ -11,6 +11,7 @@ class Controller{
 
     processEnv(env){
         this.env = env;
+
         //if (this.agent.goalie == false) return;
         ///console.log(env.vision.myAngle);
 
@@ -24,11 +25,12 @@ class Controller{
         }
 
         this.getAction("root");
+        //console.log("\n")
 
     }
 
     getAction(title){
-        //console.log(title);
+       // console.log(title);
         const action = this.dt[title]
         if(typeof action.exec == "function") {
             action.exec(this, this.dt.state)
@@ -120,6 +122,22 @@ class Controller{
     setGoalie(){
         this.agent.goalie = true;
         this.dt = trees.GoalieTree;
+    }
+
+    getTeam(){
+        return this.agent.teamName;
+    }
+
+    getTeamMates(){
+        let teamMates = [];
+        this.env.vision.players.forEach(element => {
+            //console.log(element.team);
+            //console.log(this.agent.teamName);
+            if (element.team === this.agent.teamName){
+                teamMates.push(element);
+            }
+        });
+        return teamMates;
     }
 
 }

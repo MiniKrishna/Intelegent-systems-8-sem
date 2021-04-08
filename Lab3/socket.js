@@ -15,6 +15,7 @@ module.exports = function (agent, teamName, version, goalie = false) {
             if (err) throw err
         })
     }
+    agent.teamName = teamName;
     // Инициализация игрока на сервере
     if (goalie){
         agent.controller.setGoalie();

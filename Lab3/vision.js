@@ -19,12 +19,16 @@ module.exports =  {
         gameObjects.forEach(element => {
             // Игроки
             if (element.cmd.p[0] == "p"){
-                players.push({dist: element.p, team : element.cmd.p.join('')})
+
+                if (element.cmd.p[1] === undefined) return
+                players.push({dist: element.p, team : element.cmd.p[1].slice(0, -1).slice(1)})
+                return
             }
             // мяч
             else if (element.cmd.p[0] == "b"){
                 //console.log(element);
                 result.ball = element.p;
+                return
             }
 
             let objectName = element.cmd.p.join('');
@@ -67,8 +71,12 @@ module.exports =  {
         result.players = [];
         // расчет координат игроков
         players.forEach(element => {
-            result.players.push({pos: this.calculateObjectCoord(flagsNearMyself, myselfCoord, element.dist), team: element.team})
+            result.players.push({pos: this.calculateObjectCoord(flagsNearMyself, myselfCoord, element.dist), team: element.team, dist: element.dist})
         });
+
+        // координаты мяча
+        if (result.ball)
+        result.ball.pos = this.calculateObjectCoord(flagsNearMyself, myselfCoord, result.ball)
 
         result.myself = myselfCoord;
 
