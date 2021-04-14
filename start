@@ -7,4 +7,4 @@ rcssserver &
 cd ../rcssmonitor-16.0.0
 rcssmonitor &
 cd ../Intelegent-systems-8-sem
-node Lab3/app.js
+node Lab4/app.js
