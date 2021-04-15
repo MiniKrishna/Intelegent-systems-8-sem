@@ -73,9 +73,9 @@ const PlayerTree = {
     },
     getToPoint: {
         condition(controller, state){
-            state.vel = 50;
+            state.vel = 60;
             if (controller.objectDistance < 3){
-                state.vel = 30;
+                state.vel = 40;
             }
             return Math.abs(controller.angleToResearchPoint) > 5
         },
@@ -115,7 +115,7 @@ const PlayerTree = {
             controller.ballControl = true;
             controller.calculateToFlag(state.action.goal);
             let kickPower = 70
-            if (controller.objectDistance > 20){
+            if (controller.objectDistance > 25){
                 kickPower = 40
             }
             controller.kickBall(kickPower);
@@ -149,9 +149,9 @@ const PlayerTree = {
     normalDist: {
         condition(controller, state){
             if ((-controller.angleToResearchPoint) < 40 && (-controller.angleToResearchPoint) > 20){
-                state.vel = 50;
+                state.vel = 60;
                 if (controller.objectDistance < 7){
-                    state.vel = 30;
+                    state.vel = 40;
                 }
                 else if (controller.objectDistance < 3){
                     state.vel = 0;
